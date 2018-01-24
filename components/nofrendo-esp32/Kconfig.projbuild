@@ -43,6 +43,12 @@ config HW_LCD_TYPE
 	default 1 if HW_LCD_TYPE_ST
 
 
+config HW_LCD_MISO_GPIO_CUST
+	int "LCD MISO pin"
+	depends on HW_CUSTOM
+	range 1 35
+	default 17
+
 config HW_LCD_MOSI_GPIO_CUST
 	int "LCD MOSI pin"
 	depends on HW_CUSTOM
