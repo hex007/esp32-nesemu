@@ -136,7 +136,7 @@ config HW_LCD_BL_GPIO
 config SOUND_ENA
 	bool "Analog audio on GPIO26"
 	default n
-	help 
+	help
 		ESP32 will output 0-3.3V analog audio signal on GPIO26.
 
 
@@ -147,28 +147,44 @@ config HW_PSX_ENA
 		If you connect a PSX/PS2 controller to the following GPIOs, you can control the NES.
 
 
-config HW_PSX_CLK
-	int "PSX controller CLK GPIO pin"
-	depends on HW_PSX_ENA
-	range 1 35
+config GAMEPAD_A
+	int "Gamepad A GPIO pin number"
+	range 0 33
+	default 13
+
+config GAMEPAD_B
+	int "Gamepad B GPIO pin number"
+	range 0 33
+	default 12
+
+config GAMEPAD_START
+	int "Gamepad START GPIO pin number"
+	range 0 33
 	default 14
 
-config HW_PSX_DAT
-	int "PSX controller DATa GPIO pin"
-	depends on HW_PSX_ENA
-	range 1 35
+config GAMEPAD_SELECT
+	int "Gamepad SELECT GPIO pin number"
+	range 0 33
 	default 27
 
-config HW_PSX_ATT
-	int "PSX controller ATTention GPIO pin"
-	depends on HW_PSX_ENA
-	range 1 35
-	default 16
+config GAMEPAD_UP
+	int "Gamepad UP GPIO pin number"
+	range 0 33
+		default 25
 
-config HW_PSX_CMD
-	int "PSX controller CoMmanD GPIO pin"
-	depends on HW_PSX_ENA
-	range 1 35
-	default 2
+config GAMEPAD_DOWN
+	int "Gamepad DOWN GPIO pin number"
+	range 0 33
+	default 33
+
+config GAMEPAD_LEFT
+	int "Gamepad LEFT GPIO pin number"
+	range 0 33
+	default 0
+
+config GAMEPAD_RIGHT
+	int "Gamepad RIGHT GPIO pin number"
+	range 0 33
+	default 4
 
 endmenu
