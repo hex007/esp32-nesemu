@@ -48,14 +48,14 @@ To control the NES, connect GPIO ppins to a common ground pcb gamepad:
     =======  =====
     Key      GPIO
     =======  =====
-    A        13
-    B        12
-    START    14
-    SELECT   27
-    UP       25
-    DOWN     33
-    LEFT     0
-    RIGHT    4
+    A        0
+    B        4
+    START    12
+    SELECT   14
+    RIGHT    27
+    DOWN     25
+    UP       33
+    LEFT     32
     =======  =====
 
 Also connect the ground line.
