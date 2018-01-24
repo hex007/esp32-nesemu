@@ -43,18 +43,22 @@ the SPI controller using DMA is better, but was left out due to this being a pro
 Controller
 ----------
 
-To control the NES, connect a Playstation 1 or 2 controller as such:
+To control the NES, connect GPIO ppins to a common ground pcb gamepad:
 
-    =====  =====
-    Pin    GPIO
-    =====  =====
-    CLK    14
-    DAT    27
-    ATT    16
-    CMD    2
-    =====  =====
+    =======  =====
+    Key      GPIO
+    =======  =====
+    A        13
+    B        12
+    START    14
+    SELECT   27
+    UP       25
+    DOWN     33
+    LEFT     0
+    RIGHT    4
+    =======  =====
 
-Also connect the power and ground lines. Most PS1/PS2 controllers work fine from a 3.3V power supply, if a 5V one is unavailable.
+Also connect the ground line.
 
 ROM
 ---
@@ -65,4 +69,3 @@ Copyright
 
 Code in this repository is Copyright (C) 2016 Espressif Systems, licensed under the Apache License 2.0 as described in the file LICENSE. Code in the
 components/nofrendo is Copyright (c) 1998-2000 Matthew Conte (matt@conte.com) and licensed under the GPLv2.
-
