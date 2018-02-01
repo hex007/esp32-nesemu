@@ -28,7 +28,6 @@
 #include "driver/periph_ctrl.h"
 #include "spi_lcd.h"
 
-// #define PIN_NUM_MISO CONFIG_HW_LCD_MISO_GPIO
 #define PIN_NUM_MOSI CONFIG_HW_LCD_MOSI_GPIO
 #define PIN_NUM_CLK  CONFIG_HW_LCD_CLK_GPIO
 #define PIN_NUM_CS   CONFIG_HW_LCD_CS_GPIO
@@ -311,14 +310,12 @@ static void spi_master_init()
     periph_module_enable(PERIPH_SPI_DMA_MODULE);
 
     ets_printf("lcd spi pin mux init ...\r\n");
-    // PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_MISO], 2);
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_MOSI], 2);
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_CLK], 2);
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_CS], 2);
     WRITE_PERI_REG(GPIO_ENABLE_W1TS_REG, BIT(PIN_NUM_MOSI)|BIT(PIN_NUM_CLK)|BIT(PIN_NUM_CS));
 
     ets_printf("lcd spi signal init\r\n");
-    // gpio_matrix_in(PIN_NUM_MISO, VSPIQ_IN_IDX,0);
     gpio_matrix_out(PIN_NUM_MOSI, VSPID_OUT_IDX,0,0);
     gpio_matrix_out(PIN_NUM_CLK, VSPICLK_OUT_IDX,0,0);
     gpio_matrix_out(PIN_NUM_CS, VSPICS0_OUT_IDX,0,0);
