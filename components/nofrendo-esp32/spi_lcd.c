@@ -39,13 +39,7 @@
 #define LCD_RST_SET()   GPIO.out_w1ts = (1 << PIN_NUM_RST)
 #define LCD_RST_CLR()   GPIO.out_w1tc = (1 << PIN_NUM_RST)
 
-#if CONFIG_HW_INV_BL
-#define LCD_BKG_ON()    GPIO.out_w1tc = (1 << PIN_NUM_BCKL) // Backlight ON
-#define LCD_BKG_OFF()   GPIO.out_w1ts = (1 << PIN_NUM_BCKL) //Backlight OFF
-#else
-#define LCD_BKG_ON()    GPIO.out_w1ts = (1 << PIN_NUM_BCKL) // Backlight ON
-#define LCD_BKG_OFF()   GPIO.out_w1tc = (1 << PIN_NUM_BCKL) //Backlight OFF
-#endif
+#define BIT_ME(nr) (1ULL << (nr))
 
 #define SPI_NUM  0x3
 
@@ -74,7 +68,20 @@ static void LCD_WriteData(const uint8_t data)
 
 static void  ILI9341_INITIAL ()
 {
-    LCD_BKG_ON();
+    // Setup and turnon Backlight
+    gpio_config_t io_conf;
+    io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_OUTPUT;
+    io_conf.pin_bit_mask = BIT_ME(PIN_NUM_BCKL);
+    io_conf.pull_down_en = 0;
+    io_conf.pull_up_en = 0;
+    gpio_config(&io_conf);
+    #if CONFIG_HW_INV_BL
+    gpio_set_level(PIN_NUM_BCKL, 0);
+    #else
+    gpio_set_level(PIN_NUM_BCKL, 1);
+    #endif
+
     //------------------------------------Reset Sequence-----------------------------------------//
 
     LCD_RST_SET();
@@ -301,7 +308,7 @@ static void ili_gpio_init()
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_DC], 2);   //DC PIN
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_RST], 2);   //RESET PIN
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_BCKL], 2);    //BKL PIN
-    WRITE_PERI_REG(GPIO_ENABLE_W1TS_REG, BIT(PIN_NUM_DC)|BIT(PIN_NUM_RST)|BIT(PIN_NUM_BCKL));
+    WRITE_PERI_REG(GPIO_ENABLE_W1TS_REG, BIT_ME(PIN_NUM_DC)|BIT_ME(PIN_NUM_RST)|BIT_ME(PIN_NUM_BCKL));
 }
 
 static void spi_master_init()
@@ -313,7 +320,7 @@ static void spi_master_init()
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_MOSI], 2);
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_CLK], 2);
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[PIN_NUM_CS], 2);
-    WRITE_PERI_REG(GPIO_ENABLE_W1TS_REG, BIT(PIN_NUM_MOSI)|BIT(PIN_NUM_CLK)|BIT(PIN_NUM_CS));
+    WRITE_PERI_REG(GPIO_ENABLE_W1TS_REG, BIT_ME(PIN_NUM_MOSI)|BIT_ME(PIN_NUM_CLK)|BIT_ME(PIN_NUM_CS));
 
     ets_printf("lcd spi signal init\r\n");
     gpio_matrix_out(PIN_NUM_MOSI, VSPID_OUT_IDX,0,0);
@@ -405,8 +412,8 @@ void ili9341_write_frame(const uint16_t xs, const uint16_t ys, const uint16_t wi
                     x += 2;
                     continue;
                 }
-                x1 = myPalette[(unsigned char)(data[y][x])]; x++;
-                y1 = myPalette[(unsigned char)(data[y][x])]; x++;
+                x1 = myPalette[(unsigned char)(data[height-y-1][width-x-1])]; x++;
+                y1 = myPalette[(unsigned char)(data[height-y-1][width-x-1])]; x++;
                 temp[i] = U16x2toU32(x1,y1);
             }
             while (READ_PERI_REG(SPI_CMD_REG(SPI_NUM))&SPI_USR);
@@ -418,6 +425,7 @@ void ili9341_write_frame(const uint16_t xs, const uint16_t ys, const uint16_t wi
     }
     while (READ_PERI_REG(SPI_CMD_REG(SPI_NUM))&SPI_USR);
 }
+
 
 void ili9341_init()
 {
